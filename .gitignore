@@ -2,6 +2,7 @@
 experiments/*
 logs/*
 logs/
+data_collection/gpt_dataset/predictor_ckpts/ensemble/
 *pdf
 *out
 *png

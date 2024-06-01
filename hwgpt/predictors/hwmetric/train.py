@@ -244,6 +244,36 @@ if __name__ == "__main__":
         )
         with open(model_path, "wb") as f:
             pickle.dump(model, f)
+    elif args.model == "ensemble":
+
+        X_train = train_dataset.arch_features_train.data.numpy()
+        X_test = test_dataset.arch_features_test.data.numpy()
+        print(X_train.shape)
+        print(X_test.shape)
+        Y_train = train_dataset.latencies_train.data.numpy() * 1000
+        Y_test = test_dataset.latencies_test.data.numpy() * 1000
+        model.train(X_train, Y_train)
+        mse_mean, mse_std = model.validate(X_test, Y_test)
+        print("Mean mse", mse_mean)
+        print("Std mse", mse_std)
+        base_path = (
+            "data_collection/gpt_datasets/predictor_ckpts/hwmetric/"
+            + str(args.model)
+            + "/"
+        )
+        model_path = (
+            base_path
+            + args.metric
+            + "_"
+            + args.type
+            + "_"
+            + args.search_space
+            + "_"
+            + args.device
+            + ".pkl"
+        )
+        with open(model_path, "wb") as f:
+            pickle.dump(model, f)
     elif args.model == "mlp":
         optimizer = optim.Adam(model.parameters(), lr=args.lr)
         model = model.to(device)

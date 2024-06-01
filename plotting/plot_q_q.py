@@ -54,7 +54,7 @@ class HWQQPlot:
     def plot_q_q(
         self, hw_metric: str, device: str, surrogate_type: str, data_type: str
     ):
-        for surrogate_type in ["conformal_quantile"]:
+        for surrogate_type in ["conformal_quantile", "ensemble"]:
             if surrogate_type == "conformal_quantile" or surrogate_type == "quantile":
                 hw_quantiles = self.get_hw_metrics(
                     hw_metric, device, surrogate_type, data_type
@@ -79,6 +79,9 @@ class HWQQPlot:
                 hw_mean, hw_std = self.get_hw_metrics(
                     hw_metric, device, surrogate_type, data_type
                 )
+                # if hw_metric=="energies":
+                #    hw_mean = hw_mean*1000
+                #    hw_std = hw_std*1000
                 print(hw_mean)
                 print(hw_std)
                 sm.qqplot(actual_quantiles, line="45", loc=hw_mean, scale=hw_std)
@@ -116,8 +119,8 @@ class HWQQPlot:
 
 
 if __name__ == "__main__":
-    plot = HWQQPlot("l")
-    hw_quantiles, actual_quantiles = plot.plot_q_q(
+    plot = HWQQPlot("s")
+    """hw_quantiles, actual_quantiles = plot.plot_q_q(
         "energies", "rtx3080", "conformal_quantile", "quantile"
     )
     hw_quantiles, actual_quantiles = plot.plot_q_q(
@@ -170,4 +173,7 @@ if __name__ == "__main__":
     hw_quantiles, actual_quantiles = plot.plot_q_q(
         "latencies", "a6000", "conformal_quantile", "quantile"
     )
-    print(hw_quantiles, actual_quantiles)
+    print(hw_quantiles, actual_quantiles)"""
+    hw_quantiles, actual_quantiles = plot.plot_q_q(
+        "energies", "a100", "conformal_quantile", "quantile"
+    )

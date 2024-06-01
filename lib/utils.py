@@ -522,11 +522,7 @@ def get_hw_predictor_surrogate(
     #print(model_path)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    if surrogate_type == "conformal_quantile":
-        surrogate_path = model_path + ".pkl"
-        with open(surrogate_path, "rb") as f:
-            predictor = pickle.load(f)
-    elif surrogate_type == "quantile":
+    if surrogate_type in ["conformal_quantile", "quantile", "ensemble"]:
         surrogate_path = model_path + ".pkl"
         with open(surrogate_path, "rb") as f:
             predictor = pickle.load(f)
@@ -569,6 +565,12 @@ def predict_hw_surrogate(
         energy = energy[0, quantile]
     elif surrogate_type=="mlp":
         energy = surrogate(torch.tensor(arch).cuda())  # .item()
+    elif surrogate_type=="ensemble":
+        mean, std, noisy_predictions = surrogate.predict(arch)
+        if not return_all:
+            return noisy_predictions
+        else:
+            return (mean,std)
     elif surrogate_type == "gaussianmlp":
       if not return_all:
         mean, logvar = surrogate(torch.tensor(arch).cuda())
